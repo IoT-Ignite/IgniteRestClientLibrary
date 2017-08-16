@@ -6,8 +6,9 @@ A useful Retrofit based Android library for REST API calls.
 
 To add the library your project just download the source and add the following to **settings.gradle**
 
-`include ':igniterestclientlib'
-project(':igniterestclientlib').projectDir = new File(settingsDir, 'path-to-project-module')`
+`include ':igniterestclientlib' `
+
+`project(':igniterestclientlib').projectDir = new File(settingsDir, path-to-project-module')`
 
 
 
