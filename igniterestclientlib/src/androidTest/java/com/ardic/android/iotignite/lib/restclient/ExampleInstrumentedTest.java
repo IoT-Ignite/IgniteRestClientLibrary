@@ -3,6 +3,7 @@ package com.ardic.android.iotignite.lib.restclient;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,8 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.ardic.android.iotignite.lib.restclient", appContext.getPackageName());
+        Log.i("Test", "useAppContext: " + appContext.getPackageName());
+
+        assertEquals("com.ardic.android.iotignite.lib.restclient.test", appContext.getPackageName());
     }
 }
