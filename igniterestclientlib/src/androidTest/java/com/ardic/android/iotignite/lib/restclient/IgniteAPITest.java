@@ -20,6 +20,7 @@ import com.ardic.android.iotignite.lib.restclient.model.DromDevice;
 import com.ardic.android.iotignite.lib.restclient.model.EndUser;
 import com.ardic.android.iotignite.lib.restclient.model.EndUserContent;
 import com.ardic.android.iotignite.lib.restclient.model.LastThingData;
+import com.ardic.android.iotignite.lib.restclient.model.MqttUserInfo;
 import com.ardic.android.iotignite.lib.restclient.model.SysUserInfo;
 import com.ardic.android.iotignite.lib.restclient.model.ThingDataHistory;
 import com.ardic.android.iotignite.lib.restclient.model.UserCreateCredentials;
@@ -46,14 +47,14 @@ public class IgniteAPITest {
     private static final String TAG = "TEST";
 
     // test tenant
-    private static final String USERNAME = "greenhouse@iot-ignite.com";
+    private static final String USERNAME = "tenant@address.com";
     // test password
-    private static final String PASSWORD = "gr33nhous3";
+    private static final String PASSWORD = "my_awesome_password";
     private static final String APP_KEY = "2bb69ddce24f4021a1c6b77f1ab9302c";
     private static final String TEST_DEVICE_ID = "b8:27:eb:df:c6:11@iotigniteagent";
-    private static final String TEST_NODE_ID = "IgniteGreenhouse";
-    private static final String TEST_THING_ID = "TemperatureThing";
-    private static final String TEST_TENANT_DOMAIN = "ignite.com_greenhouse_iot-ignite.com";
+    private static final String TEST_NODE_ID = "TestNode";
+    private static final String TEST_THING_ID = "TestThing";
+    private static final String TEST_TENANT_DOMAIN = "tenant_iot-ignite.com";
     private static final String TEST_DROM_CONFIG_ID = "4d6b54d5-43ec-4bc3-a611-ffaab67d02fe";
 
     private IgniteRestClient mTestClient;
@@ -327,6 +328,34 @@ public class IgniteAPITest {
 
         mTestClient.deactivateGateway(deviceCode);
 
+    }
+
+    @Test
+    public void registerMqttDeviceTest() {
+        authentication();
+        int response = mTestClient.registerMqttDevice(new MqttUserInfo("restapitest2", "restapitest12345", "restapitest2"));
+
+        Log.i(TAG, "Response:" + response);
+    }
+
+
+    @Test
+    public void getMqttUser() {
+        authentication();
+        appKeyTest();
+        int response = mTestClient.getMqttDeviceUser("restapitest");
+
+        Log.i(TAG, "Response:" + response);
+
+    }
+
+    @Test
+    public void updateMqttUser() {
+        authentication();
+        appKeyTest();
+        int response = mTestClient.updateMqttDevice(new MqttUserInfo("restapitest2", "restapitest123456789", "restapitest2"));
+
+        Log.i(TAG, "updateMqttUser Response: " + response);
     }
 
 }

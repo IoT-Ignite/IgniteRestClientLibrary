@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
@@ -26,4 +27,16 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.okhttp3:okhttp:3.8.1'
+}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://repo.iot-ignite.com/content/repositories/releases") {
+                authentication(userName: "ardic", password: "SDyPauN+")
+                pom.groupId = "com.ardic.android"
+                pom.artifactId = "igniterestclientlib"
+                pom.version = '1.0.0'
+            }
+        }
+    }
 }

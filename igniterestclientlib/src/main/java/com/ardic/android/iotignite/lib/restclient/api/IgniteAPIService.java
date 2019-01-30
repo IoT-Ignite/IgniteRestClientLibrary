@@ -9,6 +9,7 @@ import com.ardic.android.iotignite.lib.restclient.model.DromConfiguration;
 import com.ardic.android.iotignite.lib.restclient.model.DromDevice;
 import com.ardic.android.iotignite.lib.restclient.model.EndUser;
 import com.ardic.android.iotignite.lib.restclient.model.LastThingData;
+import com.ardic.android.iotignite.lib.restclient.model.MqttUserInfo;
 import com.ardic.android.iotignite.lib.restclient.model.SysUserInfo;
 import com.ardic.android.iotignite.lib.restclient.model.ThingDataHistory;
 import com.ardic.android.iotignite.lib.restclient.model.UserCreateCredentials;
@@ -88,6 +89,21 @@ public interface IgniteAPIService {
 
     @POST("api/v3/device/{code}/control/logoff")
     Call<ResponseBody> deactivateGateway(@Path(value = "code") String deviceCode);
+
+
+    // MQTT API'S START
+
+    @POST("/api/v3/device-admin/register-device")
+    Call<ResponseBody> registerMqttDevice(@Body MqttUserInfo mqttUserInfo);
+
+    @PUT("/api/v3/device-admin/user")
+    Call<ResponseBody> updateMqttUser(@Body MqttUserInfo mqttUserInfo);
+
+    @GET("/api/v3/device-admin/user/{device}")
+    Call<ResponseBody> getMqttUser(@Path("device") String deviceId);
+
+
+    // MQTT API'S END
 }
 
 

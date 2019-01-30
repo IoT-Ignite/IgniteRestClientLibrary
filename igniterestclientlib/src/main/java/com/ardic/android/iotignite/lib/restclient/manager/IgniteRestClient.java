@@ -23,6 +23,7 @@ import com.ardic.android.iotignite.lib.restclient.model.DromConfiguration;
 import com.ardic.android.iotignite.lib.restclient.model.DromDevice;
 import com.ardic.android.iotignite.lib.restclient.model.EndUser;
 import com.ardic.android.iotignite.lib.restclient.model.LastThingData;
+import com.ardic.android.iotignite.lib.restclient.model.MqttUserInfo;
 import com.ardic.android.iotignite.lib.restclient.model.SysUserInfo;
 import com.ardic.android.iotignite.lib.restclient.model.ThingDataHistory;
 import com.ardic.android.iotignite.lib.restclient.model.UserCreateCredentials;
@@ -675,6 +676,104 @@ public class IgniteRestClient implements RefreshTokenTaskListener {
 
         return responseCode;
 
+    }
+
+    /**
+     * MQTT API'S START
+     */
+
+    public int registerMqttDevice(MqttUserInfo mqttUserInfo) {
+
+        int responseCode = -1;
+
+        Call<ResponseBody> responseBodyCall = mIgniteService.registerMqttDevice(mqttUserInfo);
+
+        try {
+            Response<ResponseBody> responseBodyResponse = responseBodyCall.execute();
+
+            responseCode = responseBodyResponse.code();
+
+            //Log.i(TAG, "RESPONSE CODE " + responseCode);
+
+            if (responseCode == ResponseCode.USER_CREATE_SUCCESS) {
+                try {
+
+                    JSONObject object = new JSONObject(responseBodyResponse.body().string());
+
+                    //Log.i(TAG, "RESPONSE JSON " + object.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return responseCode;
+    }
+
+
+    public int updateMqttDevice(MqttUserInfo mqttUserInfo) {
+
+        int responseCode = -1;
+
+        Call<ResponseBody> responseBodyCall = mIgniteService.updateMqttUser(mqttUserInfo);
+
+        try {
+            Response<ResponseBody> responseBodyResponse = responseBodyCall.execute();
+
+            responseCode = responseBodyResponse.code();
+
+            //Log.i(TAG, "RESPONSE CODE " + responseCode);
+
+            if (responseCode == ResponseCode.USER_CREATE_SUCCESS) {
+                try {
+
+                    JSONObject object = new JSONObject(responseBodyResponse.body().string());
+
+                    //Log.i(TAG, "RESPONSE JSON " + object.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return responseCode;
+    }
+
+    public int getMqttDeviceUser(String deviceId) {
+
+        int responseCode = -1;
+
+        Call<ResponseBody> responseBodyCall = mIgniteService.getMqttUser(deviceId);
+
+        try {
+            Response<ResponseBody> responseBodyResponse = responseBodyCall.execute();
+
+            responseCode = responseBodyResponse.code();
+
+            //Log.i(TAG, "RESPONSE CODE " + responseCode);
+
+            if (responseCode == ResponseCode.USER_CREATE_SUCCESS) {
+                try {
+
+                    JSONObject object = new JSONObject(responseBodyResponse.body().string());
+
+                    //Log.i(TAG, "RESPONSE JSON " + object.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        return responseCode;
     }
 
     @Override
