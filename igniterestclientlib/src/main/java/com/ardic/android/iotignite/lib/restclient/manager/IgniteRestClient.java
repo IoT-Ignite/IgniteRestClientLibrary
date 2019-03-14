@@ -72,6 +72,9 @@ public class IgniteRestClient implements RefreshTokenTaskListener {
 
     private String dromConfigId;
 
+    private String username;
+    private String password;
+
     private Runnable tokenWatchDog = new Runnable() {
         @Override
         public void run() {
@@ -126,6 +129,8 @@ public class IgniteRestClient implements RefreshTokenTaskListener {
 
     private IgniteRestClient(String userName, String userPassword, boolean autoRefreshToken) {
         this.autoRefresh = autoRefreshToken;
+        this.username = userName;
+        this.password = userPassword;
         mTokenService = createTokenService(TokenService.class, AUTH_REQUEST_TOKEN);
         callAccess = mTokenService.getAccessToken(GRANT_TYPE, userName, userPassword);
         mIgniteService = createService(IgniteAPIService.class, getAccessToken().getAccessToken());
@@ -172,7 +177,7 @@ public class IgniteRestClient implements RefreshTokenTaskListener {
     }
 
     public synchronized void refreshToken() {
-        new RefreshTokenAsyncTask(mTokenService, accessToken, this).execute();
+        new RefreshTokenAsyncTask(mTokenService, accessToken, username, password, this).execute();
     }
 
     public AppKey getAppKey() throws IgniteRestClientException {
