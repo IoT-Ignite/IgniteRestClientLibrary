@@ -36,6 +36,5 @@ uploadArchives {
                 pom.artifactId = "igniterestclientlib"
                 pom.version = '1.0.1'
             }*/
-        }
     }
 }
