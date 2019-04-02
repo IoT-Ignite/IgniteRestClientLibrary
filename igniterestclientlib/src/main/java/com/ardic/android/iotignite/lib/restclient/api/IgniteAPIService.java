@@ -8,11 +8,24 @@ import com.ardic.android.iotignite.lib.restclient.model.DeviceNodeInventory;
 import com.ardic.android.iotignite.lib.restclient.model.DromConfiguration;
 import com.ardic.android.iotignite.lib.restclient.model.DromDevice;
 import com.ardic.android.iotignite.lib.restclient.model.EndUser;
+import com.ardic.android.iotignite.lib.restclient.model.HotspotConfigsData;
 import com.ardic.android.iotignite.lib.restclient.model.LastThingData;
 import com.ardic.android.iotignite.lib.restclient.model.MqttUserInfo;
+import com.ardic.android.iotignite.lib.restclient.model.ModeAppsDTO;
+import com.ardic.android.iotignite.lib.restclient.model.ModeCertificatesDTO;
+import com.ardic.android.iotignite.lib.restclient.model.ModeContentsDTO;
+import com.ardic.android.iotignite.lib.restclient.model.ModeConfigsDTO;
+import com.ardic.android.iotignite.lib.restclient.model.PolicyCodeResource;
+import com.ardic.android.iotignite.lib.restclient.model.PolicyStoreDTO;
+import com.ardic.android.iotignite.lib.restclient.model.ShortcutConfigsData;
+import com.ardic.android.iotignite.lib.restclient.model.SpecificDeviceInfoResult;
 import com.ardic.android.iotignite.lib.restclient.model.SysUserInfo;
 import com.ardic.android.iotignite.lib.restclient.model.ThingDataHistory;
 import com.ardic.android.iotignite.lib.restclient.model.UserCreateCredentials;
+import com.ardic.android.iotignite.lib.restclient.model.VpnConfigsData;
+import com.ardic.android.iotignite.lib.restclient.model.WifiConfigsData;
+
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -68,6 +81,9 @@ public interface IgniteAPIService {
     @GET("/api/v3/device/summary")
     Call<Device> getDeviceSummary(@Query(value = "user", encoded = true) String user);
 
+    @GET("/api/v3/device/summary")
+    Call<Device> getDeviceSummary2(@Query(value = "device", encoded = true) String deviceId);
+
     @GET("/api/v3/device/{deviceId}/device-node-inventory")
     Call<DeviceNodeInventory> getDeviceNodeInventory(@Path(value = "deviceId") String deviceId);
 
@@ -90,7 +106,6 @@ public interface IgniteAPIService {
     @POST("api/v3/device/{code}/control/logoff")
     Call<ResponseBody> deactivateGateway(@Path(value = "code") String deviceCode);
 
-
     // MQTT API'S START
 
     @POST("/api/v3/device-admin/register-device")
@@ -102,8 +117,41 @@ public interface IgniteAPIService {
     @GET("/api/v3/device-admin/user/{device}")
     Call<ResponseBody> getMqttUser(@Path("device") String deviceId);
 
-
     // MQTT API'S END
+
+    // PROFILE API'S START
+
+    @GET("/api/v3/profile/{code}/policies")
+    Call<List<PolicyStoreDTO>> getProfilePolicies(@Path(value = "code") String profileCode);
+
+    @GET("/api/v3/profile/{code}/apps")
+    Call<List<ModeAppsDTO>> getProfileApplications(@Path(value = "code") String profileCode);
+
+    @GET("/api/v3/profile/{code}/contents")
+    Call<List<ModeContentsDTO>> getProfileContents(@Path(value = "code") String profileCode);
+
+    @GET("/api/v3/profile/{code}/certificates")
+    Call<List<ModeCertificatesDTO>> getProfileCertificates(@Path(value = "code") String profileCode);
+
+    @GET("/api/v3/profile/{code}/wifis")
+    Call<List<ModeConfigsDTO<WifiConfigsData>>> getProfileWifiConfigs(@Path(value = "code") String profileCode);
+
+    @GET("/api/v3/profile/{code}/shortcuts")
+    Call<List<ModeConfigsDTO<ShortcutConfigsData>>> getProfileShortcutConfigs(@Path(value = "code") String profileCode);
+
+    @GET("/api/v3/profile/{code}/hotspots")
+    Call<List<ModeConfigsDTO<HotspotConfigsData>>> getProfileHotspotConfigs(@Path(value = "code") String profileCode);
+
+    @GET("/api/v3/profile/{code}/vpns")
+    Call<List<ModeConfigsDTO<VpnConfigsData>>> getProfileVpnConfigs(@Path(value = "code") String profileCode);
+
+    @POST("/api/v3/profile/{code}/pushdevice/{deviceCode}")
+    Call<Void> pushModeToDevice(@Path(value = "code") String profileCode, @Path(value = "deviceCode") String deviceCode, @Body PolicyCodeResource policyCodeResource);
+
+    @GET("/api/v3/{device}/device-profile")
+    Call<SpecificDeviceInfoResult> getSpecificDeviceInfo(@Path(value = "device") String deviceCode, @Query(value = "command", encoded = true) String commandInfo);
+
+    // PROFILE API'S END
 }
 
 

@@ -22,22 +22,33 @@ import com.ardic.android.iotignite.lib.restclient.model.DeviceNodeInventory;
 import com.ardic.android.iotignite.lib.restclient.model.DromConfiguration;
 import com.ardic.android.iotignite.lib.restclient.model.DromDevice;
 import com.ardic.android.iotignite.lib.restclient.model.EndUser;
+import com.ardic.android.iotignite.lib.restclient.model.HotspotConfigsData;
 import com.ardic.android.iotignite.lib.restclient.model.LastThingData;
 import com.ardic.android.iotignite.lib.restclient.model.MqttUserInfo;
+import com.ardic.android.iotignite.lib.restclient.model.ModeAppsDTO;
+import com.ardic.android.iotignite.lib.restclient.model.ModeCertificatesDTO;
+import com.ardic.android.iotignite.lib.restclient.model.ModeContentsDTO;
+import com.ardic.android.iotignite.lib.restclient.model.ModeConfigsDTO;
+import com.ardic.android.iotignite.lib.restclient.model.PolicyCodeResource;
+import com.ardic.android.iotignite.lib.restclient.model.PolicyStoreDTO;
+import com.ardic.android.iotignite.lib.restclient.model.ShortcutConfigsData;
+import com.ardic.android.iotignite.lib.restclient.model.SpecificDeviceInfoResult;
 import com.ardic.android.iotignite.lib.restclient.model.SysUserInfo;
 import com.ardic.android.iotignite.lib.restclient.model.ThingDataHistory;
 import com.ardic.android.iotignite.lib.restclient.model.UserCreateCredentials;
+import com.ardic.android.iotignite.lib.restclient.model.VpnConfigsData;
+import com.ardic.android.iotignite.lib.restclient.model.WifiConfigsData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -394,6 +405,31 @@ public class IgniteRestClient implements RefreshTokenTaskListener {
             }
         } catch (IOException e) {
             Log.e(TAG, "getDeviceSummary() :" + e);
+        }
+
+        return device;
+    }
+
+    public Device getDeviceSummaryByDeviceId(String deviceId) {
+
+        Device device = null;
+
+        int responseCode;
+
+        Call<Device> deviceCall = mIgniteService.getDeviceSummary2(deviceId);
+
+        Log.i(TAG, "getDeviceSummaryByDeviceId : " + deviceCall.request().toString());
+        try {
+            Response<Device> deviceResponse = deviceCall.execute();
+
+            responseCode = deviceResponse.code();
+            Log.i(TAG, "response Code : " + responseCode);
+
+            if (ResponseCode.SUCCESS == responseCode) {
+                device = deviceResponse.body();
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "getDeviceSummaryByDeviceId() :" + e);
         }
 
         return device;
@@ -780,6 +816,351 @@ public class IgniteRestClient implements RefreshTokenTaskListener {
 
         return responseCode;
     }
+
+    // POLICY API'S START
+
+    public boolean pushModeToDevice(String profileCode, String deviceCode, PolicyCodeResource policyCodeResource) {
+
+        int responseCode;
+        Log.i(TAG, "Push mode to device function is started...");
+
+        if (!TextUtils.isEmpty(deviceCode) && !TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null...");
+            }
+
+            Call<Void> deviceModePushCall = mIgniteService.pushModeToDevice(profileCode,deviceCode,policyCodeResource);
+
+            if (deviceModePushCall != null) {
+                try {
+                    Response<Void> deviceModePushResponse = deviceModePushCall.execute();
+                    responseCode = deviceModePushResponse.code();
+
+                    if (responseCode == 200) {
+                        Log.i(TAG, "Response Code for MODE_PUSH : " +responseCode);
+                        Log.i(TAG, "Response message for MODE_PUSH : " +deviceModePushResponse.message());
+                        return true;
+                    }
+
+                    else {
+                        Log.d(TAG,"Response Code for pushModeToDevice(): " +responseCode+ " - " +deviceModePushResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on pushModeToDevice() function : " +e);
+                }
+            }
+            else if(deviceModePushCall == null){
+                Log.i(TAG, "Push mode to device response is null...");
+            }
+        }
+        return false;
+    }
+
+    public List<PolicyStoreDTO> getProfilePolicies(String profileCode){
+        List<PolicyStoreDTO> resourceModel = null;
+        int responseCode;
+        Log.i(TAG, "Get profile default policy function is started...");
+
+        if (!TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<List<PolicyStoreDTO>> getDefaultPolicyCall = mIgniteService.getProfilePolicies(profileCode);
+
+            if (getDefaultPolicyCall != null) {
+                try {
+                    Response<List<PolicyStoreDTO>> profileDefaultPolicyResponse = getDefaultPolicyCall.execute();
+                    responseCode = profileDefaultPolicyResponse.code();
+
+                    if (responseCode == 200) {
+
+                        resourceModel = profileDefaultPolicyResponse.body();
+                        if (resourceModel != null) {
+                            Log.d(TAG, "Defult Policy Code : " +resourceModel.get(0).getCode());
+                        }
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getProfilePolicies(): " +responseCode+ " - " +profileDefaultPolicyResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getProfilePolicies() function : " +e);
+                }
+            }
+        }
+        return resourceModel;
+
+    }
+
+    public List<ModeAppsDTO> getProfileApplications(String profileCode){
+        List<ModeAppsDTO> resourceModel = null;
+        int responseCode;
+        Log.i(TAG, "Get profile applications function is started...");
+
+        if (!TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<List<ModeAppsDTO>> getApplicationsCall = mIgniteService.getProfileApplications(profileCode);
+
+            if (getApplicationsCall != null) {
+                try {
+                    Response<List<ModeAppsDTO>> profileApplicationsResponse = getApplicationsCall.execute();
+                    responseCode = profileApplicationsResponse.code();
+
+                    if (responseCode == 200) {
+                        resourceModel = profileApplicationsResponse.body();
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getProfileApplications(): " +responseCode+ " - " +profileApplicationsResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getProfileApplications() function : " +e);
+                }
+            }
+        }
+        return resourceModel;
+
+    }
+
+    public List<ModeContentsDTO> getProfileContents(String profileCode){
+        List<ModeContentsDTO> resourceModel = null;
+        int responseCode;
+        Log.i(TAG, "Get profile contents function is started...");
+
+        if (!TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<List<ModeContentsDTO>> getContentsCall = mIgniteService.getProfileContents(profileCode);
+
+            if (getContentsCall != null) {
+                try {
+                    Response<List<ModeContentsDTO>> profileContentsResponse = getContentsCall.execute();
+                    responseCode = profileContentsResponse.code();
+
+                    if (responseCode == 200) {
+                        resourceModel = profileContentsResponse.body();
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getProfileContents(): " +responseCode+ " - " +profileContentsResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getProfileContents() function : " +e);
+                }
+            }
+        }
+        return resourceModel;
+
+    }
+
+    public List<ModeCertificatesDTO> getProfileCertificates(String profileCode){
+        List<ModeCertificatesDTO> resourceModel = null;
+        int responseCode;
+        Log.i(TAG, "Get profile certificates function is started...");
+
+        if (!TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<List<ModeCertificatesDTO>> getCertificatesCall = mIgniteService.getProfileCertificates(profileCode);
+
+            if (getCertificatesCall != null) {
+                try {
+                    Response<List<ModeCertificatesDTO>> profileCertificatesResponse = getCertificatesCall.execute();
+                    responseCode = profileCertificatesResponse.code();
+
+                    if (responseCode == 200) {
+                        resourceModel = profileCertificatesResponse.body();
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getProfileCertificates(): " +responseCode+ " - " +profileCertificatesResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getProfileCertificates() function : " +e);
+                }
+            }
+        }
+        return resourceModel;
+
+    }
+
+    public List<ModeConfigsDTO<WifiConfigsData>> getProfileWifiConfigs(String profileCode){
+        List<ModeConfigsDTO<WifiConfigsData>> resourceModel = null;
+        int responseCode;
+        Log.i(TAG, "Get profile wifi configuration function is started...");
+
+        if (!TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<List<ModeConfigsDTO<WifiConfigsData>>> getWifiConfigsCall = mIgniteService.getProfileWifiConfigs(profileCode);
+
+            if (getWifiConfigsCall != null) {
+                try {
+                    Response<List<ModeConfigsDTO<WifiConfigsData>>> profileWifiConfigsResponse = getWifiConfigsCall.execute();
+                    responseCode = profileWifiConfigsResponse.code();
+
+                    if (responseCode == 200) {
+                        resourceModel = profileWifiConfigsResponse.body();
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getProfileWifiConfigs(): " +responseCode+ " - " +profileWifiConfigsResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getProfileWifiConfigs() function : " +e);
+                }
+            }
+        }
+        return resourceModel;
+
+    }
+
+    public List<ModeConfigsDTO<ShortcutConfigsData>> getProfileShortcutConfigs(String profileCode){
+        List<ModeConfigsDTO<ShortcutConfigsData>> resourceModel = null;
+        int responseCode;
+        Log.i(TAG, "Get profile shortcut configuration function is started...");
+
+        if (!TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<List<ModeConfigsDTO<ShortcutConfigsData>>> getShortcutConfigsCall = mIgniteService.getProfileShortcutConfigs(profileCode);
+
+            if (getShortcutConfigsCall != null) {
+                try {
+                    Response<List<ModeConfigsDTO<ShortcutConfigsData>>> profileShortcutConfigsResponse = getShortcutConfigsCall.execute();
+                    responseCode = profileShortcutConfigsResponse.code();
+
+                    if (responseCode == 200) {
+                        resourceModel = profileShortcutConfigsResponse.body();
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getProfileShortcutConfigs(): " +responseCode+ " - " +profileShortcutConfigsResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getProfileShortcutConfigs() function : " +e);
+                }
+            }
+        }
+        return resourceModel;
+
+    }
+
+    public List<ModeConfigsDTO<HotspotConfigsData>> getProfileHotspotConfigs(String profileCode){
+        List<ModeConfigsDTO<HotspotConfigsData>> resourceModel = null;
+        int responseCode;
+        Log.i(TAG, "Get profile hotspot configuration function is started...");
+
+        if (!TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<List<ModeConfigsDTO<HotspotConfigsData>>> getHotspotConfigsCall = mIgniteService.getProfileHotspotConfigs(profileCode);
+
+            if (getHotspotConfigsCall != null) {
+                try {
+                    Response<List<ModeConfigsDTO<HotspotConfigsData>>> profileHotspotConfigsResponse = getHotspotConfigsCall.execute();
+                    responseCode = profileHotspotConfigsResponse.code();
+
+                    if (responseCode == 200) {
+                        resourceModel = profileHotspotConfigsResponse.body();
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getProfileHotspotConfigs(): " +responseCode+ " - " +profileHotspotConfigsResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getProfileHotspotConfigs() function : " +e);
+                }
+            }
+        }
+        return resourceModel;
+
+    }
+
+    public List<ModeConfigsDTO<VpnConfigsData>> getProfileVpnConfigs(String profileCode){
+        List<ModeConfigsDTO<VpnConfigsData>> resourceModel = null;
+        int responseCode;
+        Log.i(TAG, "Get profile vpn configuration function is started...");
+
+        if (!TextUtils.isEmpty(profileCode)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<List<ModeConfigsDTO<VpnConfigsData>>> getVpnConfigsCall = mIgniteService.getProfileVpnConfigs(profileCode);
+
+            if (getVpnConfigsCall != null) {
+                try {
+                    Response<List<ModeConfigsDTO<VpnConfigsData>>> profileVpnConfigsResponse = getVpnConfigsCall.execute();
+                    responseCode = profileVpnConfigsResponse.code();
+
+                    if (responseCode == 200) {
+                        resourceModel = profileVpnConfigsResponse.body();
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getProfileVpnConfigs(): " +responseCode+ " - " +profileVpnConfigsResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getProfileVpnConfigs() function : " +e);
+                }
+            }
+        }
+        return resourceModel;
+
+    }
+
+
+    public SpecificDeviceInfoResult getSpecificDeviceInfo(String deviceCode, String command){
+        SpecificDeviceInfoResult deviceInfoModel = null;
+        int responseCode;
+        Log.i(TAG, "Get deviceProfileInfo function is started...");
+
+        if (!TextUtils.isEmpty(deviceCode) && !TextUtils.isEmpty(command)) {
+
+            if(mIgniteService == null){
+                Log.i(TAG, "Cloud service is null");
+            }
+
+            Call<SpecificDeviceInfoResult> getInfoCall = mIgniteService.getSpecificDeviceInfo(deviceCode,command);
+
+            if (getInfoCall != null) {
+                try {
+                    Response<SpecificDeviceInfoResult> deviceProfileInfoResponse = getInfoCall.execute();
+                    responseCode = deviceProfileInfoResponse.code();
+
+                    if (responseCode == 200) {
+                        deviceInfoModel = deviceProfileInfoResponse.body();
+                    }
+                    else {
+                        Log.d(TAG,"Response Code for getSpecificDeviceInfo(): " +responseCode+ " - " +deviceProfileInfoResponse.message());
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException on getSpecificDeviceInfo() function : " +e);
+                }
+            }
+        }
+        return deviceInfoModel;
+
+    }
+
+
+    // POLICY API'S END
 
     @Override
     public void onTokenRefreshed(AccessToken refreshToken) {

@@ -1,6 +1,9 @@
 package com.ardic.android.iotignite.lib.restclient.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * Created by yavuz.erzurumlu on 7/13/17.
@@ -17,8 +20,9 @@ public class Bluetooth {
     @SerializedName("bluetoothSupported")
     private boolean bluetoothSupported;
 
-    @SerializedName("bluetoothpaireddevices")
-    private String bluetoothPairedDevices;
+    @SerializedName("bluetoothPairedDevices")
+    @Expose
+    private List<BluetoothPairedDevice> bluetoothPairedDevices = null;
 
     public String getBluetoothState() {
         return bluetoothState;
@@ -44,11 +48,11 @@ public class Bluetooth {
         this.bluetoothSupported = bluetoothSupported;
     }
 
-    public String getBluetoothPairedDevices() {
+    public List<BluetoothPairedDevice> getBluetoothPairedDevices() {
         return bluetoothPairedDevices;
     }
 
-    public void setBluetoothPairedDevices(String bluetoothPairedDevices) {
+    public void setBluetoothPairedDevices(List<BluetoothPairedDevice> bluetoothPairedDevices) {
         this.bluetoothPairedDevices = bluetoothPairedDevices;
     }
 

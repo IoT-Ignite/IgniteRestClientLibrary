@@ -1,97 +1,105 @@
 package com.ardic.android.iotignite.lib.restclient.model;
 
-import android.util.Log;
-
-import com.google.gson.annotations.SerializedName;
+/**
+ * Created by oguzcakir on 02.10.2018.
+ */
 
 import java.util.List;
-
-/**
- * Created by yavuz.erzurumlu on 7/13/17.
- */
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class DeviceContent {
 
     @SerializedName("deviceId")
+    @Expose
     private String deviceId;
-
+    @SerializedName("imei")
+    @Expose
+    private String imei;
     @SerializedName("status")
+    @Expose
     private String status;
-
     @SerializedName("osVersion")
+    @Expose
     private String osVersion;
-
     @SerializedName("model")
+    @Expose
     private String model;
-
-    @SerializedName("label")
-    private String labeL;
-
     @SerializedName("modeAppVersion")
+    @Expose
     private String modeAppVersion;
-
     @SerializedName("lockStatus")
+    @Expose
     private boolean lockStatus;
-
     @SerializedName("mandatoryLockStatus")
+    @Expose
     private boolean mandatoryLockStatus;
-
     @SerializedName("lostStatus")
+    @Expose
     private boolean lostStatus;
-
     @SerializedName("createdDate")
+    @Expose
     private long createdDate;
-
     @SerializedName("lastModifiedDate")
+    @Expose
     private long lastModifiedDate;
-
     @SerializedName("detailLastModifiedDate")
+    @Expose
     private long detailLastModifiedDate;
-
+    @SerializedName("lastPresenceDate")
+    @Expose
+    private long lastPresenceDate;
     @SerializedName("presence")
+    @Expose
     private Presence presence;
-
-    @SerializedName("location")
-    private Location location;
-
     @SerializedName("battery")
+    @Expose
     private Battery battery;
-
     @SerializedName("network")
+    @Expose
     private Network network;
-
     @SerializedName("storage")
+    @Expose
     private Storage storage;
-
     @SerializedName("osProfile")
+    @Expose
     private OSProfile osProfile;
-
     @SerializedName("currentUser")
+    @Expose
     private User currentUser;
-
     @SerializedName("users")
-    private List<User> users;
-
+    @Expose
+    private List<User> users = null;
     @SerializedName("adminArea")
+    @Expose
     private AdminArea adminArea;
-
     @SerializedName("activePolicy")
+    @Expose
     private Policy activePolicy;
-
     @SerializedName("afexMode")
+    @Expose
     private String afexMode;
-
-    @SerializedName("deviceTimezone")
-    private String deviceTimeZone;
-
-    @SerializedName("deviceCurrentTime")
-    private String deviceCurrentTime;
-
+    @SerializedName("currentPolicy")
+    @Expose
+    private String currentPolicy;
     @SerializedName("links")
-    private List<Link> links;
-
+    @Expose
+    private List<Link> links = null;
     @SerializedName("code")
+    @Expose
     private String code;
+    @SerializedName("location")
+    @Expose
+    private Location location;
+    @SerializedName("deviceTimezone")
+    @Expose
+    private String deviceTimezone;
+    @SerializedName("deviceCurrentTime")
+    @Expose
+    private String deviceCurrentTime;
+    @SerializedName("label")
+    @Expose
+    private String label;
 
     public String getDeviceId() {
         return deviceId;
@@ -99,6 +107,14 @@ public class DeviceContent {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
+        this.imei = imei;
     }
 
     public String getStatus() {
@@ -123,14 +139,6 @@ public class DeviceContent {
 
     public void setModel(String model) {
         this.model = model;
-    }
-
-    public String getLabeL() {
-        return labeL;
-    }
-
-    public void setLabeL(String labeL) {
-        this.labeL = labeL;
     }
 
     public String getModeAppVersion() {
@@ -189,20 +197,20 @@ public class DeviceContent {
         this.detailLastModifiedDate = detailLastModifiedDate;
     }
 
+    public long getLastPresenceDate() {
+        return lastPresenceDate;
+    }
+
+    public void setLastPresenceDate(Integer lastPresenceDate) {
+        this.lastPresenceDate = lastPresenceDate;
+    }
+
     public Presence getPresence() {
         return presence;
     }
 
     public void setPresence(Presence presence) {
         this.presence = presence;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     public Battery getBattery() {
@@ -277,20 +285,12 @@ public class DeviceContent {
         this.afexMode = afexMode;
     }
 
-    public String getDeviceTimeZone() {
-        return deviceTimeZone;
+    public String getCurrentPolicy() {
+        return currentPolicy;
     }
 
-    public void setDeviceTimeZone(String deviceTimeZone) {
-        this.deviceTimeZone = deviceTimeZone;
-    }
-
-    public String getDeviceCurrentTime() {
-        return deviceCurrentTime;
-    }
-
-    public void setDeviceCurrentTime(String deviceCurrentTime) {
-        this.deviceCurrentTime = deviceCurrentTime;
+    public void setCurrentPolicy(String currentPolicy) {
+        this.currentPolicy = currentPolicy;
     }
 
     public List<Link> getLinks() {
@@ -309,6 +309,38 @@ public class DeviceContent {
         this.code = code;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getDeviceTimezone() {
+        return deviceTimezone;
+    }
+
+    public void setDeviceTimezone(String deviceTimezone) {
+        this.deviceTimezone = deviceTimezone;
+    }
+
+    public String getDeviceCurrentTime() {
+        return deviceCurrentTime;
+    }
+
+    public void setDeviceCurrentTime(String deviceCurrentTime) {
+        this.deviceCurrentTime = deviceCurrentTime;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     @Override
     public String toString() {
         return "DeviceContent{" +
@@ -316,7 +348,7 @@ public class DeviceContent {
                 ", status='" + status + '\'' +
                 ", osVersion='" + osVersion + '\'' +
                 ", model='" + model + '\'' +
-                ", labeL='" + labeL + '\'' +
+                ", labeL='" + label + '\'' +
                 ", modeAppVersion='" + modeAppVersion + '\'' +
                 ", lockStatus=" + lockStatus +
                 ", mandatoryLockStatus=" + mandatoryLockStatus +
@@ -335,7 +367,7 @@ public class DeviceContent {
                 ", adminArea=" + adminArea +
                 ", activePolicy=" + activePolicy +
                 ", afexMode='" + afexMode + '\'' +
-                ", deviceTimeZone='" + deviceTimeZone + '\'' +
+                ", deviceTimeZone='" + deviceTimezone + '\'' +
                 ", deviceCurrentTime='" + deviceCurrentTime + '\'' +
                 ", links=" + links +
                 ", code='" + code + '\'' +

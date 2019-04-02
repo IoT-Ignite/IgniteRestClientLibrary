@@ -6,8 +6,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -30,14 +30,6 @@ dependencies {
 }
 uploadArchives {
     repositories {
-        mavenDeployer {
-            repository(url: "https://repo.iot-ignite.com/content/repositories/releases") {
-                authentication(userName: "ardic", password: "SDyPauN+")
-                pom.groupId = "com.ardic.android"
-                pom.artifactId = "igniterestclientlib"
-                pom.version = '1.0.1'
-            }
-
             /*
             repository(url:mavenLocal().getUrl()) {
                 pom.groupId = "com.ardic.android"
